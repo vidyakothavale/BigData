@@ -1,0 +1,130 @@
+------filter-------
+student_details= LOAD '/user/cloudera/student_data.txt' USING PigStorage(',') AS (id:int,firstname:chararray);
+DUMP as student_details;
+
+student_details = LOAD '/user/cloudera/student_data.txt' USING PigStorage(',')
+AS (id:int,firstname:chararray,lastname:chararray,age:int,phone:chararray,city:chararray);
+
+Dump student_details;
+
+
+filter_data= FILTER student_details BY city=='Chennai';
+DUMP filter_data;
+
+Result=FILTER  student_details BY age==22;
+dump Result;
+
+Result=FILTER  student_details BY age>22;
+dump Result;
+
+A=LOAD '/user/cloudera/pfilter.txt' USING PigStore(',') as (a1:int,a2:int);
+dump A;
+
+Result= FILTER A BY a2==8;
+Dump Result;
+
+
+----distinct------
+student_details=LOAD '/user/cloudera/student_data.txt'
+USING PigStorage(',') AS (id:int,firstname:chararray,lastname:chararray,phon:chararray,city:chararray);
+DUMP as student_details;
+
+
+distinct_data= DISTINCT student_details;
+Dump distinct_data;
+
+distinct_data = DISTINCT student_details;
+Dump distinct_data;
+
+----foreach-----
+student_details=LOAD '/user/cloudera/student_data.txt'
+USING PigStore(',') AS (id:int,firstname:chararray,);
+DUMP as student_details;
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------Filter ---------------------------------------------------------------------------------------------
+
+student_details = LOAD '/user/cloudera/student_data.txt' USING PigStorage(',') 
+AS (id:int, firstname:chararray, lastname:chararray, phone:chararray, city:chararray);
+Dump student_details;
+
+
+filter_data = FILTER student_details BY city == 'Chennai';
+dump Filter_data;
+
+
+Result = FILTER student_details BY age==22;                  ---------use all logic operator < ,> >= <= , == ,!=
+dump Result;
+
+Result = FILTER student_details BY age>22;                   ----------use all logic operator  < ,> >= <= , == ,!=
+dump Result;
+
+
+A = LOAD '/user/cloudera/pfilter.txt' USING PigStorage (',') as (a1:int,a2:int);
+dump A;
+
+Result = FILTER A BY a2==8;                                  ------------- use all logic operator   < ,> >= <= , == ,!=
+dump Result;
+
+
+---------------------------------------------------------------------------------------distinct----------------------------------------------------------------------------------------
+student_details = LOAD '/user/cloudera/student_details.txt'
+USING PigStorage(',') AS (id:int, firstname:chararray, lastname:chararray, phone:chararray, city:chararray)
+DUMP student_details;
+
+
+distinct_data = DISTINCT student_details;
+Dump distinct_data;
+
+
+
+--------------------------------------------------------------------------------------Foreach-----------------------------------------------------------------------------------------
+
+student_details = LOAD '/user/cloudera/student_data.txt'  USING PigStorage(',') 
+AS (id:int, firstname:chararray, lastname:chararray, age:int, phone:chararray, city:chararray);
+Dump student_details;
+
+foreach_data = FOREACH student_details GENERATE id,age,city;
+Dump foreach_data;
+
+
+---------------------------------------------------------------------------------------Limit------------------------------------------------------------------------------------------
+result = limit student_details 2;
+dump Result;
+
+customers = LOAD '/user/cloudera/customers.txt' USING PigStorage(',') 
+AS (id:int, name:chararray, age:int, address:chararray, salary:int);
+DUMP customers;
+
+
+orders = LOAD '/user/cloudera/orders.txt' USING PigStorage(',')
+AS (oid:int, date:chararray, 
+
+
+
+--------------------------------------------------------------------------------------inner join------------------------------------------------------------------------------------------
+coustomers_orders = JOIN customers BY id, orders BY customer_id
+Dump Coustomer_orders;
+
+--------------------------------------------------------------------------------------left join --------------------------------------------------------------------------------------
+outer_left = JOIN customers BY id LEFT OUTER, orders BY customer_id;
+Dump outer_left;
+
+-------------------------------------------------------------------------------------Right join --------------------------------------------------------------------------------------
+outer_right = JOIN customers BY id RIGHT, orders BY customer_id;
+Dump outer_right;
+
+-------------------------------------------------------------------------------------full outer join--------------------------------------------------------------------------------------
+outer_full = JOIN customer BY id FULL OUTER, orders BY customer_id;
+DUMP outer_full
+

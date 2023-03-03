@@ -1,0 +1,139 @@
+
+----UNION------
+
+employee_contact = LOAD '/user/cloudera/employee_contact.txt'
+USING PigStorage(',') AS (id:int,phone:chararray,email:chararray,city:chararay,jobid:int);
+dump employee_contact;
+
+employee_contact_demo = LOAD '/user/cloudera/employee_contact.txt'
+USING PigStorage(',') AS (id:int,phone:chararray,email:chararray,city:chararay,jobid:int);
+employee_contact_demo;
+
+Result = UNION employee_contact ,employee_contact_demo;
+
+
+----------Filter-------
+
+student_details = LOAD '/user/cloudera/student_data.txt'  USING PigStorage(',') 
+AS (id:int, firstname:chararray, lastname:chararray, age:int, phone:chararray, city:chararray);
+Dump student_details;
+
+filter_data = FILTER student_details BY city == 'Chennai';
+dump filter_data;
+
+Result = Filter student_details BY age==22;  --- use all logic operator <,> >= <= , == , !=
+dump Result;
+
+Result = FILTER student_details BY age>22;  ----- use all logic operator <,> >= <= , == , !=
+dump Result;
+
+A = LOAD '/user/cloudera/pfilter.txt' USING PigStorage (',') as (a1:int,a2:int);
+dump A;
+
+Result = FILTER A BY a2==8; -----use all logic operator <,> >= <= , == , !=
+dump Result;
+
+
+----------Distinct-------------
+
+student_details = LOAD '/user/cloudera/fwddataset/student_details.txt'  Using PigStorage(',') 
+AS (id:int, firstname:chararray, lastname:chararray, phone:chararray, city:chararray);
+Dump student_details;
+
+
+distinct_data = DISTINCT student_details;
+Dump distinct_data;
+
+
+----------Foreach-----------
+
+student_details = LOAD '/user/cloudera/fwddataset/student_data.txt'  USING PigStorage(',') 
+AS (id:int, firstname:chararray, lastname:chararray, age:int, phone:chararray, city:chararray);
+Dump student_details;
+
+foreach_data = FOREACH student_details GENERATE id,age,city;
+Dump foreach_data;
+
+
+---------Limit------
+
+result = limit student_details 2;
+dump Result;
+
+
+
+customers = LOAD '/user/cloudera/fwddataset/customers.txt'  USING PigStorage(',') 
+AS (id:int, name:chararray, age:int, address:chararray, salary:int);
+Dump customers;
+
+
+orders = LOAD '/user/cloudera/fwddataset/orders.txt'  USING PigStorage(',') 
+AS (oid:int, date:chararray, customer_id:int, amount:int);
+Dump orders;
+
+
+-------------Inner Join---------
+customer_orders = JOIN customers BY id, orders BY customer_id;
+Dump customer_orders;
+
+
+-------------Left Join-----------
+outer_left = JOIN customers BY id LEFT OUTER, orders BY customer_id;
+Dump outer_left;
+
+
+-------------Right Join-------
+outer_right = JOIN customers BY id RIGHT, orders BY customer_id;
+Dump outer_right;
+
+
+-------------Full Outer Join------
+outer_full = JOIN customers BY id FULL OUTER, orders BY customer_id;
+DUMP outer_full;
+
+
+---------------Union---------
+employee_concat = LOAD '/user/cloudera/employee_contact.txt' USING PigStorage(',') AS (id:int, phone:chararray, email:chararray, city:chararray, jobid:int);
+dump employee_contact;
+
+employee_contact_demo = LOAD '/user/cloudera/employee_contact.txt' USING PigStorage(',') AS (id:int, phone:chararray, email:chararray, city:chararray, jobid:int);
+dump employee_contact_demo;
+
+
+Result = UNION employee_contact, employee_contact_demo;
+DUMP Result;
+
+-------------Concat-------------
+student_name concat = foreach student_details Generate CONCAT (firstname,'_',lastname);
+Dump student_name_concat;
+
+
+-------------Count--------------
+student_group_all = Group student_details ALL;
+Dump student_details_all;
+
+
+student_count = foreach student_group_all Generate Count(student_details.firstname);
+Dump student_count;
+
+
+-------------Max-----------
+student_gruop_all = Group student_details All;
+Dump student_group_all;
+
+
+student_gpa_max = foreach student_group_all Generate (student_details.firstname, student_details.gpa), MAX(student_details.gpa);
+Dump student_gpa_max;
+
+
+------------Min-----------
+
+student_gpa_min = foreach student_group_all Generate (student_details.firstname, student_details.gpa), MIN(student_details.gpa);
+Dump student_gpa_min;
+
+
+------------Sum------------
+
+student_gpa_sum = foreach student_group_all Generate (student_details.firstname, student_details.gpa), SUM(student_details.gpa);
+Dump student_gpa_sum;
+
